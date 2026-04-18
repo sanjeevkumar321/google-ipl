@@ -10,6 +10,32 @@ import { getMatch } from "@/lib/seed-data";
 import { db } from "@/lib/firebase";
 import { ref, onValue, get, update, set } from "firebase/database";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
+
+function DigitTicker({ value }: { value: string | number }) {
+  const chars = String(value).split("");
+  return (
+    <div className="flex">
+      {chars.map((char, i) => (
+        <div key={i} className="relative overflow-hidden flex items-center justify-center">
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.span
+              key={char}
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+              className="inline-block"
+            >
+              {char}
+            </motion.span>
+          </AnimatePresence>
+          <span className="invisible px-0">{char}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/match/$matchId")({
   loader: ({ params }) => {
@@ -40,9 +66,7 @@ function MatchRoomPage() {
 
     const fetchAndSync = async () => {
       try {
-        const response = await fetch(API_URL);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
+        const { data } = await axios.get(API_URL);
         
         // Accumulate commentary
         if (data.commentaryList) {
@@ -115,8 +139,8 @@ function MatchRoomPage() {
   const homeScore = m ? `${m.batTeam.teamScore}/${m.batTeam.teamWkts}` : match.homeScore;
   const overs = m ? m.overs : "";
   const status = m?.status || "";
-  const crr = m?.currentRunRate || 0;
-  const rrr = m?.requiredRunRate || 0;
+  const crr = m ? m.currentRunRate.toFixed(2) : "0.00";
+  const rrr = m && m.requiredRunRate > 0 ? m.requiredRunRate.toFixed(2) : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -139,18 +163,22 @@ function MatchRoomPage() {
           <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-center gap-4 md:gap-10">
             <TeamHero team={match.home} side="home" />
             <div className="flex flex-col items-center">
-              <div className="font-display text-5xl font-extrabold tabular-nums md:text-7xl">{homeScore}</div>
-              <div className="mt-2 text-xs text-muted-foreground font-bold uppercase tracking-widest">{overs} OVERS</div>
+              <div className="font-display text-5xl font-extrabold tabular-nums md:text-7xl flex justify-center">
+                <DigitTicker value={homeScore} />
+              </div>
+              <div className="mt-2 text-xs text-muted-foreground font-bold uppercase tracking-widest flex items-center justify-center gap-1.5">
+                <DigitTicker value={overs} /> <span>OVERS</span>
+              </div>
               <div className="mt-3 text-[10px] font-bold text-primary animate-pulse">{status}</div>
               {/* Run Rate Chips */}
               {m && (
                 <div className="mt-3 flex items-center gap-3">
                   <span className="inline-flex items-center gap-1 rounded-full bg-surface-elevated px-2.5 py-1 text-[10px] font-bold text-foreground">
-                    <TrendingUp className="h-3 w-3 text-primary" /> CRR {crr.toFixed(2)}
+                    <TrendingUp className="h-3 w-3 text-primary" /> CRR <DigitTicker value={crr} />
                   </span>
-                  {rrr > 0 && (
+                  {rrr && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-live/10 px-2.5 py-1 text-[10px] font-bold text-live">
-                      <Gauge className="h-3 w-3" /> RRR {rrr.toFixed(2)}
+                      <Gauge className="h-3 w-3" /> RRR <DigitTicker value={rrr} />
                     </span>
                   )}
                 </div>
@@ -391,11 +419,11 @@ function BatterRow({ bat, isStriker }: { bat: any; isStriker?: boolean }) {
         {isStriker && <span className="text-primary font-black text-xs">*</span>}
       </div>
       <div className="flex items-center gap-3 tabular-nums text-sm">
-        <span className="w-6 text-center font-black">{bat.batRuns}</span>
-        <span className="w-6 text-center text-muted-foreground">{bat.batBalls}</span>
-        <span className="w-6 text-center text-primary font-semibold">{bat.batFours}</span>
-        <span className="w-6 text-center text-accent font-semibold">{bat.batSixes}</span>
-        <span className="w-10 text-center text-xs text-muted-foreground">{bat.batStrikeRate.toFixed(1)}</span>
+        <div className="w-6 flex justify-center font-black"><DigitTicker value={bat.batRuns} /></div>
+        <div className="w-6 flex justify-center text-muted-foreground"><DigitTicker value={bat.batBalls} /></div>
+        <div className="w-6 flex justify-center text-primary font-semibold"><DigitTicker value={bat.batFours} /></div>
+        <div className="w-6 flex justify-center text-accent font-semibold"><DigitTicker value={bat.batSixes} /></div>
+        <div className="w-10 flex justify-center text-xs text-muted-foreground"><DigitTicker value={bat.batStrikeRate.toFixed(1)} /></div>
       </div>
     </div>
   );
@@ -409,11 +437,11 @@ function BowlerDetailRow({ bowl, isStriker }: { bowl: any; isStriker?: boolean }
         {isStriker && <span className="text-accent font-black text-xs">*</span>}
       </div>
       <div className="flex items-center gap-3 tabular-nums text-sm">
-        <span className="w-6 text-center text-muted-foreground">{bowl.bowlOvs}</span>
-        <span className="w-6 text-center text-muted-foreground">{bowl.bowlMaidens}</span>
-        <span className="w-6 text-center font-semibold">{bowl.bowlRuns}</span>
-        <span className="w-6 text-center font-black text-primary">{bowl.bowlWkts}</span>
-        <span className="w-10 text-center text-xs text-muted-foreground">{bowl.bowlEcon.toFixed(1)}</span>
+        <div className="w-6 flex justify-center text-muted-foreground"><DigitTicker value={bowl.bowlOvs} /></div>
+        <div className="w-6 flex justify-center text-muted-foreground"><DigitTicker value={bowl.bowlMaidens} /></div>
+        <div className="w-6 flex justify-center font-semibold"><DigitTicker value={bowl.bowlRuns} /></div>
+        <div className="w-6 flex justify-center font-black text-primary"><DigitTicker value={bowl.bowlWkts} /></div>
+        <div className="w-10 flex justify-center text-xs text-muted-foreground"><DigitTicker value={bowl.bowlEcon.toFixed(1)} /></div>
       </div>
     </div>
   );
