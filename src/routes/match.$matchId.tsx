@@ -38,6 +38,38 @@ function DigitTicker({ value }: { value: string | number }) {
   );
 }
 
+function BigEventOverlay({ event }: { event: string }) {
+  const colors: Record<string, string> = {
+    FOUR: "from-primary/90 to-primary/40",
+    SIX: "from-accent/90 to-accent/40",
+    WICKET: "from-live/90 to-live/40",
+    OUT: "from-live/90 to-live/40",
+  };
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className={`fixed inset-0 z-[200] flex items-center justify-center pointer-events-none bg-gradient-to-br ${colors[event] || "from-white/20 to-black/40"} backdrop-blur-xl`}
+    >
+      <motion.div
+        initial={{ scale: 0.5, y: 100, rotate: -10 }}
+        animate={{ scale: 1, y: 0, rotate: 0 }}
+        exit={{ scale: 2, opacity: 0 }}
+        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        className="relative"
+      >
+        <span className="absolute -inset-10 animate-ping rounded-full bg-white/20" />
+        <h2 className="text-8xl md:text-[14rem] font-black italic tracking-tighter text-white drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] uppercase flex flex-col items-center">
+          {event}
+          <span className="text-2xl mt-4 bg-white/20 px-4 py-1 rounded-full not-italic">FIREWORK FEED!</span>
+        </h2>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export const Route = createFileRoute("/match/$matchId")({
   loader: ({ params }) => {
     const match = getMatch(params.matchId);
@@ -55,6 +87,8 @@ function MatchRoomPage() {
   const { match: initialMatch } = Route.useLoaderData();
   const [liveData, setLiveData] = useState<any>(null);
   const [allCommentary, setAllCommentary] = useState<any[]>([]);
+  const [overlayEvent, setOverlayEvent] = useState<string | null>(null);
+  const [lastProcessedBall, setLastProcessedBall] = useState<number>(0);
 
   // Integrated Background Sync (Replaces separate script)
   useEffect(() => {
@@ -143,8 +177,25 @@ function MatchRoomPage() {
   const crr = m ? m.currentRunRate.toFixed(2) : "0.00";
   const rrr = m && m.requiredRunRate > 0 ? m.requiredRunRate.toFixed(2) : null;
 
+  useEffect(() => {
+    if (allCommentary.length > 0) {
+      const latest = allCommentary[0];
+      if (latest.timestamp && latest.timestamp !== lastProcessedBall) {
+        setLastProcessedBall(latest.timestamp);
+        const event = latest.event?.toUpperCase();
+        if (event === "FOUR" || event === "SIX" || event === "WICKET" || event === "OUT") {
+          setOverlayEvent(event);
+          setTimeout(() => setOverlayEvent(null), 3500);
+        }
+      }
+    }
+  }, [allCommentary, lastProcessedBall]);
+
   return (
     <div className="min-h-screen bg-background">
+      <AnimatePresence>
+        {overlayEvent && <BigEventOverlay event={overlayEvent} />}
+      </AnimatePresence>
       <SiteHeader />
 
       {/* Hero Score Section */}
