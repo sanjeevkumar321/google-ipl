@@ -3,10 +3,6 @@
     {
       "source": "/api-match/(.*)",
       "destination": "https://www.cricbuzz.com/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
     }
   ]
 }
