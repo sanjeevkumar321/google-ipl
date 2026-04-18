@@ -10,8 +10,8 @@ export function SiteHeader() {
             <Radio className="h-5 w-5 text-primary-foreground" strokeWidth={2.5} />
           </div>
           <div className="flex flex-col leading-none">
-            <span className="font-display text-lg font-extrabold tracking-tight">TerraceTV</span>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">live · fans · together</span>
+            <span className="font-display text-lg font-extrabold tracking-tight">MatchHuddle</span>
+            <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Live · Fans · Emotions</span>
           </div>
         </Link>
 
@@ -39,12 +39,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <button className="hidden rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline-flex">
-            Sign in
-          </button>
-          <button className="rounded-lg bg-gradient-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-glow-primary transition-transform hover:scale-[1.03]">
-            Join free
-          </button>
+          {/* Auth buttons removed per user request */}
         </div>
       </div>
     </header>

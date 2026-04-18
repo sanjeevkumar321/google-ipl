@@ -193,6 +193,13 @@ function MatchRoomPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <div className="bg-live/90 backdrop-blur-sm px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.3em] text-white flex items-center justify-center gap-2.5 sticky top-0 z-[100]">
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+        </span>
+        Live Stadium Feed • Real-Time Updates active
+      </div>
       <AnimatePresence>
         {overlayEvent && <BigEventOverlay event={overlayEvent} />}
       </AnimatePresence>
