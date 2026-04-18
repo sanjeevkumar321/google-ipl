@@ -10,32 +10,34 @@ export function SiteHeader() {
             <Radio className="h-5 w-5 text-primary-foreground" strokeWidth={2.5} />
           </div>
           <div className="flex flex-col leading-none">
-            <span className="font-display text-lg font-extrabold tracking-tight">MatchHuddle</span>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Live · Fans · Emotions</span>
+            <span className="font-display text-sm font-extrabold tracking-tight md:text-lg">MatchHuddle</span>
+            <span className="hidden text-[8px] uppercase tracking-[0.2em] text-muted-foreground md:block">Live · Fans · Emotions</span>
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="flex items-center gap-0.5 sm:gap-1">
           <Link
             to="/"
             activeOptions={{ exact: true }}
-            className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="rounded-lg px-2 py-1.5 text-xs font-bold text-muted-foreground transition-colors hover:text-foreground md:px-3 md:py-2 md:text-sm md:font-medium"
             activeProps={{ className: "text-foreground bg-surface" }}
           >
             Matches
           </Link>
-          <a
-            href="#"
-            className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          <Link
+            to="/circles"
+            className="rounded-lg px-2 py-1.5 text-xs font-bold text-muted-foreground transition-colors hover:text-foreground md:px-3 md:py-2 md:text-sm md:font-medium"
+            activeProps={{ className: "text-foreground bg-surface" }}
           >
             Fan Circles
-          </a>
-          <a
-            href="#"
-            className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          </Link>
+          <Link
+            to="/highlights"
+            className="rounded-lg px-2 py-1.5 text-xs font-bold text-muted-foreground transition-colors hover:text-foreground md:px-3 md:py-2 md:text-sm md:font-medium"
+            activeProps={{ className: "text-foreground bg-surface" }}
           >
             Highlights
-          </a>
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">

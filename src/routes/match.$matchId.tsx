@@ -219,30 +219,32 @@ function MatchRoomPage() {
             {match.status === "live" && <LiveBadge minute={overs + " ov"} />}
           </div>
 
-          <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-center gap-4 md:gap-10">
+          <div className="mt-8 flex flex-col items-center gap-8 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-10">
             <TeamHero team={match.home} side="home" />
-            <div className="flex flex-col items-center">
-              <div className="font-display text-5xl font-extrabold md:text-7xl flex justify-center">
+            
+            <div className="flex flex-col items-center order-first md:order-none">
+              <div className="font-display text-6xl font-extrabold md:text-7xl flex justify-center tracking-tighter">
                 <DigitTicker value={homeScore} />
               </div>
-              <div className="mt-2 text-xs text-muted-foreground font-bold uppercase tracking-widest flex items-center justify-center gap-1.5">
+              <div className="mt-2 text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] flex items-center justify-center gap-1.5">
                 <DigitTicker value={overs} /> <span>OVERS</span>
               </div>
-              <div className="mt-3 text-[10px] font-bold text-primary animate-pulse">{status}</div>
+              <div className="mt-2.5 text-[10px] font-black text-primary animate-pulse uppercase tracking-wider">{status}</div>
               {/* Run Rate Chips */}
               {m && (
-                <div className="mt-3 flex items-center gap-3">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-surface-elevated px-2.5 py-1 text-[10px] font-bold text-foreground">
+                <div className="mt-4 flex items-center gap-2.5">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-surface-elevated/80 backdrop-blur px-3 py-1 text-[11px] font-bold text-foreground transition-all hover:bg-surface-elevated">
                     <TrendingUp className="h-3 w-3 text-primary" /> CRR <DigitTicker value={crr} />
                   </span>
                   {rrr && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-live/10 px-2.5 py-1 text-[10px] font-bold text-live">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-live/10 backdrop-blur px-3 py-1 text-[11px] font-bold text-live transition-all hover:bg-live/20">
                       <Gauge className="h-3 w-3" /> RRR <DigitTicker value={rrr} />
                     </span>
                   )}
                 </div>
               )}
             </div>
+
             <TeamHero team={match.away} side="away" />
           </div>
 
