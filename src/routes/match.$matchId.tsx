@@ -15,22 +15,23 @@ import { motion, AnimatePresence } from "framer-motion";
 function DigitTicker({ value }: { value: string | number }) {
   const chars = String(value).split("");
   return (
-    <div className="flex">
+    <div className="flex items-center justify-center">
       {chars.map((char, i) => (
-        <div key={i} className="relative overflow-hidden flex items-center justify-center">
+        <div key={i} className="relative inline-flex flex-col items-center justify-center overflow-hidden">
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span
               key={char}
-              initial={{ y: -20, opacity: 0 }}
+              initial={{ y: -25, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 20, opacity: 0 }}
-              transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-              className="inline-block"
+              exit={{ y: 25, opacity: 0 }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+              className="absolute inset-0 flex items-center justify-center"
             >
               {char}
             </motion.span>
           </AnimatePresence>
-          <span className="invisible px-0">{char}</span>
+          {/* Invisible placeholder to maintain width and height */}
+          <span className="invisible pointer-events-none select-none">{char}</span>
         </div>
       ))}
     </div>
@@ -163,7 +164,7 @@ function MatchRoomPage() {
           <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-center gap-4 md:gap-10">
             <TeamHero team={match.home} side="home" />
             <div className="flex flex-col items-center">
-              <div className="font-display text-5xl font-extrabold tabular-nums md:text-7xl flex justify-center">
+              <div className="font-display text-5xl font-extrabold md:text-7xl flex justify-center">
                 <DigitTicker value={homeScore} />
               </div>
               <div className="mt-2 text-xs text-muted-foreground font-bold uppercase tracking-widest flex items-center justify-center gap-1.5">
@@ -418,7 +419,7 @@ function BatterRow({ bat, isStriker }: { bat: any; isStriker?: boolean }) {
         <span className="text-sm font-bold text-foreground truncate max-w-[100px]">{bat.batName}</span>
         {isStriker && <span className="text-primary font-black text-xs">*</span>}
       </div>
-      <div className="flex items-center gap-3 tabular-nums text-sm">
+      <div className="flex items-center gap-3 text-sm">
         <div className="w-6 flex justify-center font-black"><DigitTicker value={bat.batRuns} /></div>
         <div className="w-6 flex justify-center text-muted-foreground"><DigitTicker value={bat.batBalls} /></div>
         <div className="w-6 flex justify-center text-primary font-semibold"><DigitTicker value={bat.batFours} /></div>
@@ -436,7 +437,7 @@ function BowlerDetailRow({ bowl, isStriker }: { bowl: any; isStriker?: boolean }
         <span className="text-sm font-bold text-foreground truncate max-w-[100px]">{bowl.bowlName}</span>
         {isStriker && <span className="text-accent font-black text-xs">*</span>}
       </div>
-      <div className="flex items-center gap-3 tabular-nums text-sm">
+      <div className="flex items-center gap-3 text-sm">
         <div className="w-6 flex justify-center text-muted-foreground"><DigitTicker value={bowl.bowlOvs} /></div>
         <div className="w-6 flex justify-center text-muted-foreground"><DigitTicker value={bowl.bowlMaidens} /></div>
         <div className="w-6 flex justify-center font-semibold"><DigitTicker value={bowl.bowlRuns} /></div>
