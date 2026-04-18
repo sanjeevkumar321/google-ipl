@@ -1,5 +1,6 @@
 {
   "name": "tanstack_start_ts",
+  "homepage": ".",
   "private": true,
   "sideEffects": false,
   "type": "module",
